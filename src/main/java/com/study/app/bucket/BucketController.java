@@ -13,14 +13,15 @@ public class BucketController {
 
 	@Autowired
 	private BucketService bucketService;
-
+	
 	@ResponseBody
 	@PostMapping( value = "/test" )
 	public JSONObject test()throws Exception {
 		JSONObject item = new JSONObject();
-		item.put( "time server", bucketService.getServerTime() );
-
+		item.put( "time", bucketService.getServerTime() );
+		item.put( "time2", "오호호호홍" );
+		
 		return item;
 	}
-
+	
 }
