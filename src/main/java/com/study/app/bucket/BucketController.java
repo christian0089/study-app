@@ -19,7 +19,7 @@ public class BucketController {
 	public JSONObject test()throws Exception {
 		JSONObject item = new JSONObject();
 		item.put( "time", bucketService.getServerTime() );
-		item.put( "time2", "오호호호홍" );
+		item.put( "time2", "adasdds" );
 		
 		return item;
 	}
