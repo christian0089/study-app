@@ -5,5 +5,20 @@
 		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="PayMapper">
-
+	<select id="getLoginUserSeqno" parameterType="JSONObject" resultType="Long">
+		SELECT
+			COALESCE( U.USER_SEQNO, 0 ) AS USER_SEQNO
+		FROM
+			(
+				SELECT 
+					COUNT(1),
+					USER_SEQNO
+				FROM
+					TB_USER
+				WHERE 
+					USER_ID = #{userId}
+				AND SVC_GB = #{svcGb}
+				AND PWD = #{pwd}
+			) U
+	</select>
 </mapper>
