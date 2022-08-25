@@ -36,6 +36,8 @@ dependencies {
 	implementation 'javax.servlet:jstl:1.2'
 	implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'
 	
+	implementation files('libs/encryptor-1.0.jar')
+	
 	implementation group: 'org.mybatis', name: 'mybatis', version: '3.5.9'
 	implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
 	implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
