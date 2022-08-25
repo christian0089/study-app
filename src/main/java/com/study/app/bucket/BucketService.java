@@ -1,7 +1,9 @@
 package com.study.app.bucket;
 
 import java.io.FileNotFoundException;
+import java.util.Map;
 
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,4 +23,14 @@ public class BucketService {
 		
 		return bucketDAO.getServerTime();
 	}
+	
+	public long login(JSONObject param) throws Exception {
+		long userSeqNo = bucketDAO.login(param);
+		if(userSeqNo == 0) {
+			throw new StudyException( "0001", "아이디 또는 비밀번호를 확인하여 주세요" );
+		}
+		return bucketDAO.login(param);
+	}
+	
+	
 }

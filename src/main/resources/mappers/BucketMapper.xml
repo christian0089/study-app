@@ -9,4 +9,19 @@
 	<select id="getServerTime" resultType="String">
 		SELECT DATE_FORMAT( NOW(), '%Y.%m.%d %H:%i' )
 	</select>
+	
+	<select id="login" parameterType="JSONObject" resultType="Long">
+		SELECT
+			COALESCE( U.USER_SEQNO, 0 ) AS USER_SEQNO
+		FROM
+			(
+				SELECT
+					COUNT(1),
+					USER_SEQNO
+				  FROM TB_USER
+				 WHERE USER_ID = #{userId}
+		   		   AND PWD = #{pwd}
+		   		   AND SVC_GB = #{svcGb}
+			) U
+	</select>
 </mapper>
