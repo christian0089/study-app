@@ -5,7 +5,7 @@ Configutation:
   Properties:
     Property:
       name: log-path
-      value: "C:/Temp/logs"
+      value: "/apps/tomcat/study-app/logs"
 
   Appenders:
     Console:
@@ -15,13 +15,13 @@ Configutation:
         pattern: "%d{yyyyMMdd HH:mm:ss} [%-5p] %C{1}.%M (%L) | %m%n"
     File:
       name: File_Appender
-      fileName: ${log-path}/viewfinder.log
+      fileName: ${log-path}/study-app.log
       PatternLayout:
         pattern: "%d{yyyyMMdd HH:mm:ss} [%-5p] %C{1}.%M (%L) | %m%n"
     RollingFile:
       - name: RollingFile_Appender
         fileName: ${log-path}/rollingfile.log
-        filePattern: "C:/Temp/logs/archive/rollingfile.log.%d{yyyy-MM-dd-hh-mm}.gz"
+        filePattern: "/apps/tomcat/study-app/logs/archive/rollingfile.log.%d{yyyy-MM-dd-hh-mm}.gz"
         PatternLayout:
           pattern: "%d{yyyyMMdd HH:mm:ss} [%-5p] %C{1}.%M (%L) | %m%n"
         Policies:
