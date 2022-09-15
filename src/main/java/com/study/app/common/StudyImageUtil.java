@@ -49,9 +49,12 @@ public class StudyImageUtil {
 		}
 		
 		String monthSuffix = CommonUtil.SEPARATOR + CommonUtil.getServerTime( "%Y%m" );
+		String saveDir = this.bucketUploadBasePath + this.BUCKET_REP_SUFFIX + monthSuffix;
 		String saveFileName = CommonUtil.SEPARATOR + CommonUtil.getRandomString( -1, 8 ) + CommonUtil.getServerTime( "%Y%m%d" ) + CommonUtil.getRandomString( -1, 8 ) + "." + uploadFileFormat;
 		
-		file.transferTo( new File( this.bucketUploadBasePath + this.BUCKET_REP_SUFFIX + monthSuffix + saveFileName ) );
+		CommonUtil.makeDirs( saveDir );
+		
+		file.transferTo( new File( saveDir + saveFileName ) );
 		
 		return this.bucketBaseUrl + this.BUCKET_REP_SUFFIX + monthSuffix + saveFileName;
 	}
@@ -76,9 +79,12 @@ public class StudyImageUtil {
 		}
 		
 		String monthSuffix = CommonUtil.SEPARATOR + CommonUtil.getServerTime( "%Y%m" );
+		String saveDir = this.bucketUploadBasePath + this.BUCKET_STORY_SUFFIX + monthSuffix;
 		String saveFileName = CommonUtil.SEPARATOR + CommonUtil.getRandomString( -1, 8 ) + CommonUtil.getServerTime( "%Y%m%d" ) + CommonUtil.getRandomString( -1, 8 ) + "." + uploadFileFormat;
 		
-		file.transferTo( new File( this.bucketUploadBasePath + this.BUCKET_STORY_SUFFIX + monthSuffix + saveFileName ) );
+		CommonUtil.makeDirs( saveDir );
+		
+		file.transferTo( new File( saveDir + saveFileName ) );
 		
 		return this.bucketBaseUrl + this.BUCKET_STORY_SUFFIX + monthSuffix + saveFileName;
 	}
@@ -103,9 +109,12 @@ public class StudyImageUtil {
 		}
 		
 		String monthSuffix = CommonUtil.SEPARATOR + CommonUtil.getServerTime( "%Y%m" );
+		String saveDir = this.payUploadBasePath + monthSuffix;
 		String saveFileName = CommonUtil.SEPARATOR + CommonUtil.getRandomString( -1, 8 ) + CommonUtil.getServerTime( "%Y%m%d" ) + CommonUtil.getRandomString( -1, 8 ) + "." + uploadFileFormat;
 		
-		file.transferTo( new File( this.payUploadBasePath + monthSuffix + saveFileName ) );
+		CommonUtil.makeDirs( saveDir );
+		
+		file.transferTo( new File( saveDir + saveFileName ) );
 		
 		return this.payBaseUrl + monthSuffix + saveFileName;
 	}
