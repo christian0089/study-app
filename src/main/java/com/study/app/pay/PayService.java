@@ -1,12 +1,14 @@
 package com.study.app.pay;
 
 import com.study.app.common.CommonService;
+import com.study.app.common.StudyImageUtil;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.study.app.common.Encryptor;
 import com.study.app.common.StudyException;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @SuppressWarnings( "unchecked" )
@@ -46,4 +48,29 @@ public class PayService extends CommonService {
 		}
 		return userSeqno;
 	}
+
+	public void registerPay(JSONObject reqItem, MultipartFile file) throws Exception {
+		String payItemSeqno = (String) reqItem.get("payItemSeqno");
+		String payAmt = (String) reqItem.get("payAmt");
+		String filePath = (String) reqItem.get("filePath");
+		long paySeqno = 0L;
+
+		if( payItemSeqno == null || "".equals( payItemSeqno ) ) {
+			throw new StudyException( "4000", "[payItemSeqno] 값이 누락되었습니다." );
+		}
+		if( payAmt == null || "".equals( payAmt ) ) {
+			throw new StudyException( "4000", "[payAmt] 값이 누락되었습니다." );
+		}
+
+		reqItem.put("paySeqno", paySeqno);
+
+		paySeqno = payDAO.registerPay(reqItem);
+
+		if ( file != null && !file.isEmpty() ) {
+			reqItem.put("paySeqno", paySeqno);
+			reqItem.put("filePath", new StudyImageUtil().uplaodPayImage(file));
+			payDAO.registerPayImage(reqItem);
+		}
+	}
+
 }

@@ -21,4 +21,41 @@
 				AND PWD = #{pwd}
 			) U
 	</select>
+
+	<insert id="registerPay" parameterType="JSONObject">
+		INSERT INTO TB_PAYMENT
+			(
+			 	USER_SEQNO,
+			 	PAY_ITEM_SEQNO,
+			 	PAY_AMT,
+			 	REG_DTTM
+			 )
+		VALUES
+		    (
+				#{userSeqno},
+				#{payItemSeqno},
+				#{payAmt},
+		    	NOW()
+		    )
+		<selectKey keyProperty="paySeqno" resultType="Long">
+			SELECT
+			    MAX( PAY_SEQNO ) AS PAY_SEQNO
+			FROM
+			    TB_PAYMENT
+		</selectKey>
+	</insert>
+
+	<insert id="registerPayImage" parameterType="JSONObject">
+		INSERT INTO TB_PAYMENT_FILE
+			(
+			 	PAY_SEQNO,
+			 	IMG_URL
+			 )
+		VALUES
+		    (
+				#{paySeqno},
+				#{filePath}
+		    )
+	</insert>
+
 </mapper>

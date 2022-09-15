@@ -1,5 +1,7 @@
 package com.study.app.pay;
 
+import com.study.app.common.StudyException;
+import com.study.app.common.StudyImageUtil;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -9,6 +11,9 @@ import com.study.app.common.CommonController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 @RequestMapping( value = "/pay" )
@@ -23,10 +28,11 @@ public class PayController extends CommonController{
 	
 	@ResponseBody
 	@PostMapping( value = "/login" )
-	public JSONObject login( @RequestBody JSONObject reqItem ) throws Exception {
+	public JSONObject login( HttpSession session, @RequestBody JSONObject reqItem ) throws Exception {
 		long userSeqno = 0;
 		try {
 			userSeqno = payService.login(reqItem);
+			session.setAttribute("USER_SEQNO", userSeqno);
 		} catch ( Exception e ) {
 			throw e;
 		}
@@ -36,14 +42,19 @@ public class PayController extends CommonController{
 
 	@ResponseBody
 	@PostMapping( value = "/registerPay" )
-	public JSONObject registerPay( HttpServletRequest request, @RequestParam( required=false, value="file" ) MultipartFile file ) {
+	public JSONObject registerPay( HttpServletRequest request, @RequestParam( required=false, value="file" ) MultipartFile file ) throws Exception {
+		long userSeqno = super.getUserSeqno(request);
+		if ( userSeqno == 0L ) {
+			throw new StudyException( "0001", "로그인 해주세요.");
+		}
 
 		try {
-			String payItemSeqno = request.getParameter("payItemSeqno");
-			String payAmt = request.getParameter("payAmt");
+			JSONObject reqItem = new JSONObject();
+			reqItem.put("userSeqno", userSeqno);
+			reqItem.put("payItemSeqno", request.getParameter("payItemSeqno"));
+			reqItem.put("payAmt", request.getParameter("payAmt"));
 
-			System.out.println("payItemSeqno [" + payItemSeqno +"], payAmt [" + payAmt + "]" );
-
+			payService.registerPay(reqItem, file);
 
 		} catch ( Exception e ) {
 			throw e;
