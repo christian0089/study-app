@@ -2,10 +2,18 @@ package com.study.app.common;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @SuppressWarnings( "unchecked" )
 public class CommonController {
 
+	protected Logger log;
+	
+	protected CommonController( Class<?> c ) {
+		log = LoggerFactory.getLogger( c );
+	}
+	
 	public JSONObject getSuccessItemResponse() {
 		JSONObject resItem = new JSONObject();
 		resItem.put( "resCode", "0000" );
