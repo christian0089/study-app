@@ -14,15 +14,30 @@ import com.study.app.common.Encryptor;
 @Controller
 @RequestMapping( value = "/bucket" )
 public class BucketController extends CommonController {
-
+	
+	public BucketController() {
+		super(BucketController.class);
+	}
+	
 	@Autowired
 	private BucketService bucketService;
 	
+	// 로그인
 	@ResponseBody
 	@PostMapping( value = "/login" )
-	public JSONObject test(@RequestBody JSONObject param) throws Exception {
+	public JSONObject login(@RequestBody JSONObject param) throws Exception {
 		param.put("pwd", Encryptor.sha512( (String)param.get("pwd") ) );
 		
+		System.out.println("!! : " + param.get("pwd"));
+		
+		long userSeqno = bucketService.login(param);
+		
+		return super.getItemResponse( "userSeqno", userSeqno );
+	}
+	
+	@ResponseBody
+	@PostMapping( value = "/getMyBucketItems" )
+	public JSONObject test(@RequestBody JSONObject param) throws Exception {
 		long userSeqno = bucketService.login(param);
 		
 		return super.getItemResponse( "userSeqno", userSeqno );
