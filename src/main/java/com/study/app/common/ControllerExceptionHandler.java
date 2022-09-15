@@ -17,7 +17,7 @@ public class ControllerExceptionHandler extends CommonController {
 	@ResponseBody
 	@ExceptionHandler( Exception.class )
 	public JSONObject exceptionHandler( HttpServletRequest request, Exception e ) {
-		e.printStackTrace();
+		log.error( "exceptionHandler [" + request.getRequestURI() + "]", e );
 		return super.getErrorResponse( "9999", "Server-Error" );
 	}
 	
