@@ -44,3 +44,35 @@ Configutation:
           - ref: Console_Appender
           - ref: File_Appender
           - ref: RollingFile_Appender
+    Logger:
+      - name: org.springframework.core
+        additivity: false
+        level: info
+        AppenderRef:
+          - ref: Console_Appender
+          - ref: File_Appender
+          - ref: RollingFile_Appender
+    Logger:
+      - name: org.springframework.beans
+        additivity: false
+        level: info
+        AppenderRef:
+          - ref: Console_Appender
+          - ref: File_Appender
+          - ref: RollingFile_Appender
+    Logger:
+      - name: org.springframework.context
+        additivity: false
+        level: info
+        AppenderRef:
+          - ref: Console_Appender
+          - ref: File_Appender
+          - ref: RollingFile_Appender
+    Logger:
+      - name: org.springframework.web
+        additivity: false
+        level: info
+        AppenderRef:
+          - ref: Console_Appender
+          - ref: File_Appender
+          - ref: RollingFile_Appender
