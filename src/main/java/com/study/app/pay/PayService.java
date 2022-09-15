@@ -66,7 +66,7 @@ public class PayService extends CommonService {
 
 		paySeqno = payDAO.registerPay(reqItem);
 
-		if ( file != null && !file.isEmpty() ) {
+		if ( file != null && !file.isEmpty() ){
 			reqItem.put("paySeqno", paySeqno);
 			reqItem.put("filePath", new StudyImageUtil().uplaodPayImage(file));
 			payDAO.registerPayImage(reqItem);
