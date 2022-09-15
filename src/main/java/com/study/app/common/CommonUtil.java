@@ -1,5 +1,6 @@
 package com.study.app.common;
 
+import java.io.File;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
@@ -208,6 +209,11 @@ public class CommonUtil {
 		return f.replaceAll( "%Y", Y + "" ).replaceAll( "%m", ( M < 10 ? "0" + M : M + "" ) ).replaceAll( "%d", ( D < 10 ? "0" + D : D + "" ) )
 			.replaceAll( "%H", ( H < 10 ? "0" + H : H + "" ) ).replaceAll( "%h", ( h < 10 ? "0" + h : h + "" ) )
 			.replaceAll( "%i", ( m < 10 ? "0" + m : m + "" ) ).replaceAll( "%s", ( s < 10 ? "0" + s : s + "" ) );
+	}
+	
+	public static void makeDirs( String path ) {
+		File d = new File( path );
+		d.mkdirs();
 	}
 	
 	/**
