@@ -1,5 +1,6 @@
 package com.study.app.pay;
 
+import com.study.app.common.CommonService;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,11 +10,15 @@ import com.study.app.common.StudyException;
 
 @Service
 @SuppressWarnings( "unchecked" )
-public class PayService {
+public class PayService extends CommonService {
 	
 	@Autowired
 	private PayDAO payDAO;
 
+	public PayService() {
+		super(PayService.class);
+
+	}
 	
 	public long login(JSONObject reqItem) throws Exception {
 		String svcGb = (String) reqItem.get("svcGb");
