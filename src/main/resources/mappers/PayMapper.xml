@@ -37,7 +37,7 @@
 				#{payAmt},
 		    	NOW()
 		    )
-		<selectKey keyProperty="paySeqno" resultType="Long">
+		<selectKey keyProperty="paySeqno" resultType="Long" order="AFTER">
 			SELECT
 			    MAX( PAY_SEQNO ) AS PAY_SEQNO
 			FROM
@@ -54,7 +54,7 @@
 		VALUES
 		    (
 				#{paySeqno},
-				#{filePath}
+				#{imgUrl}
 		    )
 	</insert>
 

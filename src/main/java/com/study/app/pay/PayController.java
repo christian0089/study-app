@@ -8,6 +8,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import com.study.app.common.CommonController;
+import com.study.app.common.CommonUtil;
+
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -51,8 +53,8 @@ public class PayController extends CommonController{
 		try {
 			JSONObject reqItem = new JSONObject();
 			reqItem.put("userSeqno", userSeqno);
-			reqItem.put("payItemSeqno", request.getParameter("payItemSeqno"));
-			reqItem.put("payAmt", request.getParameter("payAmt"));
+			reqItem.put("payItemSeqno", CommonUtil.getLong( request.getParameter("payItemSeqno") ) );
+			reqItem.put("payAmt", CommonUtil.getInteger( request.getParameter("payAmt") ) );
 
 			payService.registerPay(reqItem, file);
 
