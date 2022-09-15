@@ -1,13 +1,19 @@
 package com.study.app.common;
 
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 public class CommonUtil {
 
+	public static final String SEPARATOR = "/";
+	
+	private static final String[] ACCEPT_FORMATS = { "jpg", "jpeg" };
+	
 	public static boolean isNull( Object obj ) {
 		return obj == null;
 	}
@@ -181,6 +187,42 @@ public class CommonUtil {
 		}
 	}
 	
+	public static boolean isAcceptedUploadFileFormat( String format ) {
+		for( String accept : ACCEPT_FORMATS ) {
+			if( accept.equalsIgnoreCase( format ) ) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public static String getServerTime( String f ){
+		Calendar cal = Calendar.getInstance();
+		int Y = cal.get(Calendar.YEAR);
+		int M = cal.get(Calendar.MONTH)+1;
+		int D = cal.get(Calendar.DATE);
+		int H = cal.get(Calendar.HOUR_OF_DAY);
+		int h = cal.get(Calendar.HOUR);
+		int m = cal.get(Calendar.MINUTE);
+		int s = cal.get(Calendar.SECOND);
+		return f.replaceAll( "%Y", Y + "" ).replaceAll( "%m", ( M < 10 ? "0" + M : M + "" ) ).replaceAll( "%d", ( D < 10 ? "0" + D : D + "" ) )
+			.replaceAll( "%H", ( H < 10 ? "0" + H : H + "" ) ).replaceAll( "%h", ( h < 10 ? "0" + h : h + "" ) )
+			.replaceAll( "%i", ( m < 10 ? "0" + m : m + "" ) ).replaceAll( "%s", ( s < 10 ? "0" + s : s + "" ) );
+	}
+	
+	/**
+	 * 랜덤알파벳 생성
+	 * -1: 대소문자숫자혼합, 0:대소문자혼합, 1:대문자만, 2:소문자만, 3:숫자만
+	 * @param t
+	 * @return
+	 */
+	public static String getRandomString( int t, int l ){
+		String _s = "";
+		while( _s.length() < l ){
+			_s += getRandomChar( t );
+		}
+		return _s;
+	}
 	
 	private static String lrPad( String base_str, int len, String asta, boolean isLeft ){
 		if( base_str == null ){
@@ -217,5 +259,39 @@ public class CommonUtil {
 			result = str + ( result.length() > 0 ? "," + result : result ); 
 		}
 		return isMinus ? "-" + result : result;
+	}
+	
+	private static char getRandomChar( int t ){
+		Random r = new Random();
+		char _c = '0';
+		switch( t ){
+			case -1 :
+				int c = r.nextInt( 3 );
+				if( c == 0 ){
+					_c = String.valueOf( r.nextInt( 10 ) ).charAt( 0 );
+				}else if( c == 1 ){
+					_c = (char)( r.nextInt( 26 ) + 65 );
+				}else {
+					_c = (char)( r.nextInt( 26 ) + 97 );
+				}
+				break;
+			case 0 :
+				if( r.nextInt( 2 ) == 0 ){
+					_c = (char)( r.nextInt( 26 ) + 65 );
+				}else{
+					_c = (char)( r.nextInt( 26 ) + 97 );
+				}
+				break;
+			case 1 :
+				_c = (char)( r.nextInt( 26 ) + 65 );
+				break;
+			case 2 :
+				_c = (char)( r.nextInt( 26 ) + 97 );
+				break;
+			case 3 :
+				_c = String.valueOf( r.nextInt( 10 ) ).charAt( 0 );
+				break;
+		}
+		return _c;
 	}
 }

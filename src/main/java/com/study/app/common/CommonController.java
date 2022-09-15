@@ -1,5 +1,8 @@
 package com.study.app.common;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
@@ -9,6 +12,17 @@ import org.slf4j.LoggerFactory;
 public class CommonController {
 
 	protected Logger log;
+	
+	protected boolean isLoggedIn( HttpServletRequest request ) {
+		HttpSession session = request.getSession();
+		long userSeqno = CommonUtil.getLong( session.getAttribute( "USER_SEQNO" ) );
+		return !( userSeqno < 1L );
+	}
+	
+	protected long getUserSeqno( HttpServletRequest request ) {
+		HttpSession session = request.getSession();
+		return CommonUtil.getLong( session.getAttribute( "USER_SEQNO" ) );
+	}
 	
 	protected CommonController( Class<?> c ) {
 		log = LoggerFactory.getLogger( c );
