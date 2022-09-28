@@ -172,6 +172,15 @@ public class CommonUtil {
 		}
 	}
 	
+	public static JSONArray parseListToJSONArray( Object o ) {
+        List<JSONObject> list = (List<JSONObject>)o;
+        JSONArray array = new JSONArray();
+        for( JSONObject obj : list ) {
+            array.add( obj );
+        }
+        return array;
+    }
+	
 	public static String lPad( String base_str, int len, String asta ){
 		return lrPad( base_str, len, asta, true );
 	}

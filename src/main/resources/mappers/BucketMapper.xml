@@ -19,4 +19,45 @@
 		   		   AND SVC_GB = #{svcGb}
 			) T1
 	</select>
+	
+	<select id="selectBucketItems" parameterType="JSONObject" resultType="CamelJSONObject">
+		SELECT BUCKET_SEQNO,
+		       USER_SEQNO,
+		       BUCKET_NM,
+		       BUCKET_DSCR,
+		       REP_IMG_URL,
+		       REG_DTTM,
+		       DEL_YN,
+		       (CASE WHEN Count(*) OVER() > ( #{stNo} + 10 ) THEN 'Y'
+		          	 ELSE 'N'
+		       END) AS MORE_YN
+		FROM   TB_BUCKET
+		WHERE  DEL_YN = 'N'
+		ORDER BY BUCKET_SEQNO DESC 
+		LIMIT  #{stNo}, 10
+	</select>
+	
+	<select id="selectBucketDtlItem" parameterType="JSONObject" resultType="CamelJSONObject">
+		SELECT BUCKET_NM, 
+			REP_IMG_URL,
+			BUCKET_DSCR
+		FROM TB_BUCKET
+		WHERE BUCKET_SEQNO = #{bucketSeqno}
+		  AND DEL_YN = 'N'
+	</select>
+	
+	<select id="selectStoryItems" parameterType="JSONObject" resultType="CamelJSONObject">
+		SELECT
+			ROW_NUMBER() OVER(ORDER BY BUCKET_STORY_SEQNO DESC) AS no,
+			SOTRY_DSCR,
+			IMG_URL,
+			(CASE WHEN Count(*) OVER() > ( #{stNo} + 10 ) THEN 'Y'
+	          	 ELSE 'N'
+	       	END) AS MORE_YN
+		FROM
+			TB_BUCKET_STORY
+		WHERE BUCKET_SEQNO = #{bucketSeqno}
+		  AND DEL_YN = 'N'
+		LIMIT #{stNo}, 10
+	</select>
 </mapper>
