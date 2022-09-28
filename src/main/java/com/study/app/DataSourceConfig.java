@@ -24,7 +24,7 @@ public class DataSourceConfig {
 		HikariDataSource hds = new HikariDataSource();
 		// password using property for decryption
 		hds.addDataSourceProperty( "password", environment.getProperty( "db.pwd" ) );
-		return hds;
+		return hds; 
 	}
 	
 	@Bean( name = "sqlSessionFactory" )
