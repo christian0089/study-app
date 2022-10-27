@@ -22,7 +22,39 @@
 			) U
 	</select>
 
+	<select id="getTodayPaidTotal" parameterType="JSONObject" resultType="CamelJSONObject">
+		/* 2.1.2 오늘의 지출내역 목록조회(소계) */
+		SELECT
+			DATE_FORMAT( P.REG_DTTM, '%Y.%m.%d' ) AS TODAY,
+			SUM( P.PAY_AMT ) AS TOTAMT
+		FROM
+			TB_PAYMENT P
+		WHERE
+			P.USER_SEQNO = #{userSeqno}
+		  AND	DATE_FORMAT( P.REG_DTTM, '%Y%m%d' ) = DATE_FORMAT( now(), '%Y%m%d' )
+	</select>
+
+	<select id="getTodayPaidItems" parameterType="JSONObject" resultType="CamelJSONObject">
+		/* 2.1.2 오늘의 지출내역 목록조회 */
+		SELECT
+			DATE_FORMAT( P.REG_DTTM, '%H:%m' ) AS PAID_TM,
+			P.PAY_AMT AS PAID_AMT,
+			I.PAY_ITEM_NM,
+			F.IMG_URL
+		FROM
+			TB_PAYMENT_ITEM I
+				INNER JOIN TB_PAYMENT P
+						   ON I.PAY_ITEM_SEQNO = P.PAY_ITEM_SEQNO
+				LEFT OUTER JOIN TB_PAYMENT_FILE F
+								ON F.PAY_SEQNO = P.PAY_SEQNO
+		WHERE
+			I.USER_SEQNO = #{userSeqno}
+		  AND	I.DEL_YN = 'N'
+		  AND 	DATE_FORMAT( P.REG_DTTM, '%Y%m%d' ) = DATE_FORMAT( now(), '%Y%m%d' )
+	</select>
+
 	<insert id="registerPay" parameterType="JSONObject">
+		/* 2.1.3 지출 등록 */
 		INSERT INTO TB_PAYMENT
 			(
 			 	USER_SEQNO,
@@ -46,6 +78,7 @@
 	</insert>
 
 	<insert id="registerPayImage" parameterType="JSONObject">
+		/* 2.1.3 지출 등록(이미지)*/
 		INSERT INTO TB_PAYMENT_FILE
 			(
 			 	PAY_SEQNO,
@@ -57,5 +90,203 @@
 				#{imgUrl}
 		    )
 	</insert>
+
+	<select id="getTotalAmounts" parameterType="Long" resultType="CamelJSONObject">
+		/* 2.1.4 월별 지출금액 목록조회(월평균 지출금액) */
+		SELECT
+			SUM( PAY_AMT) AS TOT_AMT,
+			CEILING(
+				SUM(
+					IF(
+						DATE_FORMAT( REG_DTTM, '%Y%m%d' ) >= DATE_FORMAT( DATE_ADD( DATE_SUB( NOW(), INTERVAL 1 YEAR ), INTERVAL 1 DAY ), '%Y%m%d' ),
+						PAY_AMT,
+						0
+					)
+				) / 12
+			) AS AVG_1Y_AMT,
+			CEILING(
+				SUM(
+					IF(
+						DATE_FORMAT( REG_DTTM, '%Y%m%d' ) >= DATE_FORMAT( DATE_ADD( DATE_SUB( NOW(), INTERVAL 6 MONTH ), INTERVAL 1 DAY ), '%Y%m%d' ),
+						PAY_AMT,
+						0
+					)
+				) / 6
+			) AS AVG_6M_AMT,
+			CEILING(
+				SUM(
+					IF(
+						DATE_FORMAT( REG_DTTM, '%Y%m%d' ) >= DATE_FORMAT( DATE_ADD( DATE_SUB( NOW(), INTERVAL 3 MONTH ), INTERVAL 1 DAY ), '%Y%m%d' ),
+						PAY_AMT,
+						0
+					)
+				) / 3
+			) AS AVG_3M_AMT
+		FROM
+			TB_PAYMENT
+		WHERE
+			USER_SEQNO = #{userSeqno}
+	</select>
+
+	<select id="getMonthlyItems" parameterType="Long" resultType="CamelJSONObject">
+		/* 2.1.4 월별 지출금액 목록조회(월별 지출내역) */
+		SELECT
+				DATE_FORMAT( P.REG_DTTM, '%Y%m' ) AS MONTH,
+				SUM(PAY_AMT) AS PAID_AMT,
+				COUNT(1) AS PAID_CNT
+		FROM
+				TB_PAYMENT P
+		WHERE
+				P.USER_SEQNO = #{userSeqno}
+		  AND 	DATE_FORMAT( P.REG_DTTM, '%Y%m%d' ) >= DATE_FORMAT( DATE_ADD( DATE_SUB( NOW(), INTERVAL 13 MONTH ), INTERVAL 1 DAY ), '%Y%m%d' )
+		GROUP BY DATE_FORMAT( P.REG_DTTM, '%Y%m' )
+	</select>
+
+	<select id="getPayTypeItems" parameterType="JSONObject" resultType="CamelJSONObject">
+		/* 2.1.4 월별 지출금액 목록조회(지출항목별 소계) */
+		SELECT
+				I.PAY_ITEM_NM,
+				COUNT(1) AS PAID_CNT,
+				SUM( P.PAY_AMT ) AS PAID_AMT
+		FROM
+				TB_PAYMENT_ITEM I
+				INNER JOIN TB_PAYMENT P
+				ON I.PAY_ITEM_SEQNO = P.PAY_ITEM_SEQNO
+		WHERE
+				I.USER_SEQNO = #{userSeqno}
+		  AND	I.DEL_YN = 'N'
+		  AND 	DATE_FORMAT( P.REG_DTTM, '%Y%m' ) = #{month}
+		GROUP BY I.PAY_ITEM_NM
+	</select>
+
+	<select id="getTypePaidItems" parameterType="JSONObject" resultType="CamelJSONObject">
+		/* 2.1.5 지출항목별 지출금액 목록조회 */
+		SELECT
+			I.PAY_ITEM_NM,
+			SUM( IF( P.PAY_SEQNO IS NULL, 0, 1 ) ) AS PAID_CNT,
+			SUM( IF( P.PAY_SEQNO IS NULL, 0, PAY_AMT ) ) AS PAID_AMT
+		FROM
+			TB_PAYMENT_ITEM I
+				LEFT OUTER JOIN TB_PAYMENT P
+				ON I.PAY_ITEM_SEQNO = P.PAY_ITEM_SEQNO
+				<if test="searchType != null and searchType.equals('1Y')">
+					-- 최근 1년 이내
+					AND DATE_FORMAT( P.REG_DTTM, '%Y%m%d' ) >= DATE_FORMAT( DATE_ADD( DATE_SUB( NOW(), INTERVAL 1 YEAR ), INTERVAL 1 DAY ), '%Y%m%d' )
+				</if>
+				<if test="searchType != null and searchType.equals('6M')">
+					-- 최근 6개월 이내
+					AND DATE_FORMAT( P.REG_DTTM, '%Y%m%d' ) >= DATE_FORMAT( DATE_ADD( DATE_SUB( NOW(), INTERVAL 6 MONTH ), INTERVAL 1 DAY ), '%Y%m%d' )
+				</if>
+				<if test="searchType != null and searchType.equals('3M')">
+					-- 최근 3개월 이내
+					AND DATE_FORMAT( P.REG_DTTM, '%Y%m%d' ) >= DATE_FORMAT( DATE_ADD( DATE_SUB( NOW(), INTERVAL 3 MONTH ), INTERVAL 1 DAY ), '%Y%m%d' )
+				</if>
+				<if test="searchType != null and searchType.equals('1M')">
+					-- 최근 1개월 이내
+					AND DATE_FORMAT( P.REG_DTTM, '%Y%m%d' ) >= DATE_FORMAT( DATE_ADD( DATE_SUB( NOW(), INTERVAL 1 MONTH ), INTERVAL 1 DAY ), '%Y%m%d' )
+				</if>
+		WHERE
+				I.USER_SEQNO = #{userSeqno}
+		  AND 	I.DEL_YN = 'N'
+		GROUP BY
+			I.PAY_ITEM_SEQNO
+		ORDER BY
+			I.PAY_ITEM_NM
+	</select>
+
+	<select id="getTypeItems" parameterType="JSONObject" resultType="CamelJSONObject">
+		/* 2.1.6 지출항목 목록조회 */
+		SELECT
+			I.PAY_ITEM_SEQNO,
+			I.PAY_ITEM_NM,
+			SUM( IF( P.PAY_SEQNO IS NULL, 0, 1 ) ) AS USING_CNT
+		FROM
+			TB_PAYMENT_ITEM I
+			LEFT OUTER JOIN TB_PAYMENT P
+			ON I.PAY_ITEM_SEQNO = P.PAY_ITEM_SEQNO
+		WHERE
+				I.USER_SEQNO = #{userSeqno}
+		  AND 	I.DEL_YN = 'N'
+		GROUP BY
+			I.PAY_ITEM_SEQNO
+		ORDER BY
+			I.PAY_ITEM_NM
+	</select>
+
+	<select id="checkPayType" parameterType="JSONObject" resultType="Integer">
+		/* 2.1.7 지출항목 등록 ( 중복검증, 조회된 카운트가 1이상이면 항목명 중복으로 등록불가  ) */
+		SELECT
+			COUNT(1)
+		FROM
+			TB_PAYMENT_ITEM
+		WHERE
+				USER_SEQNO = #{userSeqno}
+		  AND 	PAY_ITEM_NM = #{payItemNm}
+	</select>
+
+	<insert id="registerPayType" parameterType="JSONObject">
+		/* 2.1.7 지출항목 등록 */
+		INSERT INTO TB_PAYMENT_ITEM
+			(
+				USER_SEQNO,
+				PAY_ITEM_NM
+			)
+		VALUES
+			(
+				#{userSeqno},
+				#{payItemNm}
+			)
+	</insert>
+
+	<update id="deletePayType" parameterType="JSONObject">
+		/* 2.1.8 지출항목 삭제 */
+		UPDATE
+			TB_PAYMENT_ITEM
+		SET
+			PAY_ITEM_NM = CONCAT( PAY_ITEM_NM, '(deleted)' ),
+			DEL_YN = 'Y'
+		WHERE
+				USER_SEQNO = #{userSeqno}
+		  AND 	PAY_ITEM_SEQNO = #{payItemSeqno}
+		  AND 	DEL_YN = 'N'
+	</update>
+
+	<select id="getCurrentPwd" parameterType="JSONObject" resultType="String">
+		/* 2.1.9 기존 비밀번호 */
+		SELECT
+			PWD
+		FROM
+			TB_USER
+		WHERE
+				USER_SEQNO = #{userSeqno}
+		  AND 	SVC_GB = 'P'
+		  AND 	DEL_YN = 'N'
+	</select>
+
+	<update id="updatePwd" parameterType="JSONObject">
+		/* 2.1.9 비밀번호 변경 */
+		UPDATE
+			TB_USER
+		SET
+			PWD = #{chgPwd}
+		WHERE
+				USER_SEQNO = #{userSeqno}
+		  AND 	SVC_GB = 'P'
+		  AND 	PWD = #{crntPwd}
+		  AND 	DEL_YN = 'N'
+	</update>
+
+	<update id="withdrawal" parameterType="JSONObject">
+		/* 2.1.10 회원 탈퇴 */
+		UPDATE
+			TB_USER
+		SET
+			DEL_YN = 'Y'
+		WHERE
+				USER_SEQNO = #{userSeqno}
+		  AND 	SVC_GB = 'P'
+		  AND 	PWD = #{pwd}
+		  AND 	DEL_YN = 'N'
+	</update>
 
 </mapper>
