@@ -41,6 +41,10 @@ public class StudyImageUtil {
 			throw new StudyException( "1001", "업로드 파일의 용량이 초과되었습니다. [Max 10Mb]" );
 		}
 		String uploadFileName = file.getOriginalFilename();
+		if( CommonUtil.isEmpty( uploadFileName ) ) {
+			throw new StudyException( "1002", "첨부한 파일의 파일명이 존재하지 않습니다." );
+		}
+		
 		String uploadFileFormat = uploadFileName.substring( uploadFileName.lastIndexOf(".") +1 );
 		
 		// 파일 확장자 검증
@@ -71,6 +75,10 @@ public class StudyImageUtil {
 			throw new StudyException( "1001", "업로드 파일의 용량이 초과되었습니다. [Max 10Mb]" );
 		}
 		String uploadFileName = file.getOriginalFilename();
+		if( CommonUtil.isEmpty( uploadFileName ) ) {
+			throw new StudyException( "1002", "첨부한 파일의 파일명이 존재하지 않습니다." );
+		}
+		
 		String uploadFileFormat = uploadFileName.substring( uploadFileName.lastIndexOf(".") +1 );
 		
 		// 파일 확장자 검증
@@ -101,6 +109,10 @@ public class StudyImageUtil {
 			throw new StudyException( "1001", "업로드 파일의 용량이 초과되었습니다. [Max 10Mb]" );
 		}
 		String uploadFileName = file.getOriginalFilename();
+		if( CommonUtil.isEmpty( uploadFileName ) ) {
+			throw new StudyException( "1002", "첨부한 파일의 파일명이 존재하지 않습니다." );
+		}
+		
 		String uploadFileFormat = uploadFileName.substring( uploadFileName.lastIndexOf(".") +1 );
 		
 		// 파일 확장자 검증
