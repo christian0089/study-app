@@ -77,6 +77,8 @@ public class BucketController extends CommonController {
 	@ResponseBody
 	@PostMapping( value = "/regBucket" )
 	public JSONObject regBucket(HttpServletRequest request, @RequestParam( required=false, value="file" ) MultipartFile file, @RequestParam Map<String, Object> paramMap) throws Exception {
+		
+		
 		if(!isLoggedIn(request)) {
 			throw new StudyException("1000", "로그인 정보가 없습니다");
 		}
@@ -99,5 +101,12 @@ public class BucketController extends CommonController {
 		long bucketStorySeqno = bucketService.regStory(paramMap, file);
 		
 		return super.getItemResponse( "bucketStorySeqno", bucketStorySeqno );
+	}
+	
+	/* 스토리 삭제 */
+	@ResponseBody
+	@PostMapping( value = "/delBucket" )
+	public JSONObject delBucket(@RequestBody JSONObject param) throws Exception {
+		return super.getItemResponse( "bucketStorySeqno", bucketService.delBucket(param) );
 	}
 }

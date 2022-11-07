@@ -40,4 +40,9 @@ public class BucketDAO extends CommonDAO {
 	public long regStory(Map<String, Object> paramMap) throws Exception {
 		return sqlSession.insert( "BucketMapper.insertStory", paramMap);
 	}
+	
+	/* 버킷 상세정보 조회 */
+	public int delBucket(JSONObject param) throws Exception {
+		return sqlSession.update( "BucketMapper.delBucket", param );
+	}
 }

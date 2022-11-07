@@ -123,4 +123,20 @@ public class BucketService extends CommonService{
 		
 		return ((BigInteger)paramMap.get("bucketStorySeqno")).longValue();
 	}
+	
+	/* 버킷 삭제 */
+	@SuppressWarnings("unchecked")
+	public String delBucket(JSONObject paramObj) throws Exception {
+		String[] reqKeys = {"bucketSeqno"};					// 필수키
+		super.checkVal(paramObj, reqKeys);					// 벨리데이션 체크
+		
+		String delYn = "N";			// 삭제여부
+		int rs = bucketDAO.delBucket(paramObj);
+		
+		if( rs > 0 ) {
+			delYn = "Y";
+		}
+		
+		return delYn;
+	}
 }
