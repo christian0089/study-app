@@ -107,6 +107,6 @@ public class BucketController extends CommonController {
 	@ResponseBody
 	@PostMapping( value = "/delBucket" )
 	public JSONObject delBucket(@RequestBody JSONObject param) throws Exception {
-		return super.getItemResponse( "bucketStorySeqno", bucketService.delBucket(param) );
+		return super.getItemResponse( "delYn", bucketService.delBucket(param) );
 	}
 }
