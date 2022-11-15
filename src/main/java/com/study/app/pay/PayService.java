@@ -23,6 +23,8 @@ public class PayService extends CommonService {
 	@Autowired
 	private PayDAO payDAO;
 
+	private CommonUtil commonUtil;
+
 	public PayService() {
 		super(PayService.class);
 
@@ -112,8 +114,20 @@ public class PayService extends CommonService {
 
 		JSONObject result = new JSONObject();
 
-		item = payDAO.getTodayPaidTotal(userSeqno);
-		todayPaidItems = payDAO.getTodayPaidItems(userSeqno);
+		Map tempMap = payDAO.getTodayPaidTotal(userSeqno);
+		item.put("totamt", commonUtil.set1000Comma( tempMap.get("totamt")));// 오늘일자 1,000 Comma Formatting
+		item.put("today", tempMap.get("today"));							// 오늘지출금액
+
+		for(JSONObject todayPaidItem : payDAO.getTodayPaidItems(userSeqno)) {
+			JSONObject tempJsonObj = new JSONObject();
+
+			tempJsonObj.put("imgUrl", todayPaidItem.get("imgUrl"));								// 첨부 이미지 URL
+			tempJsonObj.put("payItemNm", todayPaidItem.get("payItemNm"));						// 지출항목 명
+			tempJsonObj.put("paidTm", todayPaidItem.get("paidTm"));								// 지출시간
+			tempJsonObj.put("paidAmt", commonUtil.set1000Comma(todayPaidItem.get("paidAmt")));	// 지출금액 1,000 Comma Formatting
+
+			todayPaidItems.add(tempJsonObj);
+		}
 
 		result.put("item", item);
 		result.put("todayPaidItems", todayPaidItems);
@@ -123,18 +137,24 @@ public class PayService extends CommonService {
 
 	public JSONObject getTypePaidItems(JSONObject reqItems) {
 
-		Integer totAmt = 0;										// 총 누적 지출금액
-		List<JSONObject> typePaidItems = new ArrayList<>();		// 지출 항목별 목록
+		Integer totAmt = 0;													// 총 누적 지출금액
+		List<JSONObject> typePaidItems = new ArrayList<>();	// 지출 항목별 목록
 
 		JSONObject result = new JSONObject();
 
-		typePaidItems = payDAO.getTypePaidItems(reqItems);
+		for (JSONObject typePaidItem : payDAO.getTypePaidItems(reqItems)) {
+			JSONObject tempJsonObj = new JSONObject();
 
-		for (JSONObject typePaidItem : typePaidItems) {
 			totAmt += Integer.parseInt(String.valueOf(typePaidItem.get("paidAmt")));
+
+			tempJsonObj.put("payItemNm", typePaidItem.get("payItemNm"));
+			tempJsonObj.put("paidCnt", typePaidItem.get("paidCnt"));
+			tempJsonObj.put("paidAmt", commonUtil.set1000Comma(typePaidItem.get("paidAmt")));
+
+			typePaidItems.add(tempJsonObj);
 		}
 
-		result.put("totAmt", totAmt);
+		result.put("totAmt", commonUtil.set1000Comma(totAmt));
 		result.put("payTypeItems", typePaidItems);
 
 		return result;
@@ -146,7 +166,14 @@ public class PayService extends CommonService {
 
 		JSONObject result = new JSONObject();
 
-		typeItems = payDAO.getTypeItems(userSeqno);
+		for(JSONObject typeItem : payDAO.getTypeItems(userSeqno)) {
+			JSONObject tempJsonObj = new JSONObject();
+			tempJsonObj.put("payItemSeqno", typeItem.get("payItemSeqno"));
+			tempJsonObj.put("payItemNm", typeItem.get("payItemNm"));
+			tempJsonObj.put("usingCnt", commonUtil.set1000Comma(typeItem.get("usingCnt")));
+
+			typeItems.add(tempJsonObj);
+		}
 
 		result.put("items", typeItems);
 
