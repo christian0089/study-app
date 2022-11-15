@@ -29,7 +29,7 @@ public class PayController extends CommonController{
 	}
 	
 	@ResponseBody
-	@PostMapping( value = "/login" )
+	@PostMapping( value = "/login" )	// 2.1.1 로그인
 	public JSONObject login( HttpSession session, @RequestBody JSONObject reqItem ) throws Exception {
 		long userSeqno = 0;
 		try {
@@ -43,7 +43,25 @@ public class PayController extends CommonController{
 	}
 
 	@ResponseBody
-	@PostMapping( value = "/registerPay" )
+	@PostMapping( value = "/getTodayPaidItems" )	// 2.1.2 오늘의 지출내역 목록조회
+	public JSONObject getTodayPaidItems( HttpServletRequest request ) throws Exception {
+		long userSeqno = this.checkLogin(request);
+
+		JSONObject result = new JSONObject();
+
+		try {
+
+			result = payService.getTodayPaidItems(userSeqno);
+
+		} catch ( Exception e ) {
+			throw e;
+		}
+
+		return super.getItemResponse(result);
+	}
+
+	@ResponseBody
+	@PostMapping( value = "/registerPay" )	// 2.1.3 지출 등록
 	public JSONObject registerPay( HttpServletRequest request, @RequestParam( required=false, value="file" ) MultipartFile file ) throws Exception {
 		long userSeqno = this.checkLogin(request);
 
@@ -63,7 +81,7 @@ public class PayController extends CommonController{
 	}
 
 	@ResponseBody
-	@PostMapping( value = "/getMonthlyPaidItems")
+	@PostMapping( value = "/getMonthlyPaidItems")	// 2.1.4 월별 지출금액 목록조회
 	public JSONObject getMonthlyPaidItems( HttpServletRequest request ) throws Exception {
 		long userSeqno = this.checkLogin(request);
 
@@ -81,25 +99,7 @@ public class PayController extends CommonController{
 	}
 
 	@ResponseBody
-	@PostMapping( value = "/getTodayPaidItems" )
-	public JSONObject getTodayPaidItems( HttpServletRequest request ) throws Exception {
-		long userSeqno = this.checkLogin(request);
-
-		JSONObject result = new JSONObject();
-
-		try {
-
-			result = payService.getTodayPaidItems(userSeqno);
-
-		} catch ( Exception e ) {
-			throw e;
-		}
-
-		return super.getItemResponse(result);
-	}
-
-	@ResponseBody
-	@PostMapping( value = "/getTypePaidItems" )
+	@PostMapping( value = "/getTypePaidItems" )	// 2.1.5 지출항목별 지출금액 목록조회
 	public JSONObject getTypePaidItems( HttpServletRequest request, @RequestBody JSONObject reqItem) throws Exception {
 		long userSeqno = this.checkLogin(request);
 
@@ -118,7 +118,7 @@ public class PayController extends CommonController{
 	}
 
 	@ResponseBody
-	@PostMapping( value = "/getTypeItems")
+	@PostMapping( value = "/getTypeItems")	// 2.1.6 지출항목 목록조회
 	public JSONObject getTypeItems( HttpServletRequest request ) throws Exception {
 		long userSeqno = this.checkLogin(request);
 
@@ -136,7 +136,7 @@ public class PayController extends CommonController{
 	}
 
 	@ResponseBody
-	@PostMapping( value = "/registerPayType")
+	@PostMapping( value = "/registerPayType")	// 2.1.7 지출항목 등록
 	public JSONObject registerPayType( HttpServletRequest request, @RequestBody JSONObject reqItem ) throws Exception {
 		long userSeqno = this.checkLogin(request);
 		reqItem.put("userSeqno", userSeqno);
@@ -153,7 +153,7 @@ public class PayController extends CommonController{
 	}
 
 	@ResponseBody
-	@PostMapping( value = "/deletePayType")
+	@PostMapping( value = "/deletePayType")	// 2.1.8 지출항목 삭제
 	public JSONObject deletePayType( HttpServletRequest request, @RequestBody JSONObject reqItem ) throws Exception {
 		long userSeqno = this.checkLogin(request);
 		reqItem.put("userSeqno", userSeqno);
@@ -170,7 +170,7 @@ public class PayController extends CommonController{
 	}
 
 	@ResponseBody
-	@PostMapping( value = "/updatePwd")
+	@PostMapping( value = "/updatePwd")	// 2.1.9 비밀번호 변경
 	public JSONObject updatePwd( HttpServletRequest request, @RequestBody JSONObject reqItem ) throws Exception {
 		long userSeqno = this.checkLogin(request);
 		reqItem.put("userSeqno", userSeqno);
@@ -187,7 +187,7 @@ public class PayController extends CommonController{
 	}
 
 	@ResponseBody
-	@PostMapping( value = "/withdrawal")
+	@PostMapping( value = "/withdrawal")	// 2.1.10 회원 탈퇴
 	public JSONObject withdrawal( HttpServletRequest request, @RequestBody JSONObject reqItem ) throws Exception {
 		long userSeqno = this.checkLogin(request);
 		reqItem.put("userSeqno", userSeqno);

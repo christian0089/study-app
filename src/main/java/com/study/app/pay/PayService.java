@@ -29,9 +29,9 @@ public class PayService extends CommonService {
 	}
 	
 	public long login(JSONObject reqItem) throws Exception {
-		String svcGb = (String) reqItem.get("svcGb");
-		String userId = (String) reqItem.get("userId");
-		String pwd = (String) reqItem.get("pwd");
+		String svcGb = (String) reqItem.get("svcGb");	// 서비스 구분( "P" 고정 )
+		String userId = (String) reqItem.get("userId");	// 회원 아이디
+		String pwd = (String) reqItem.get("pwd");		// 비밀번호
 		
 		if( svcGb == null || "".equals( svcGb ) ) {
 			throw new StudyException( "4000", "[svcGb] 값이 누락되었습니다." );
@@ -47,7 +47,7 @@ public class PayService extends CommonService {
 		}
 		
 		reqItem.put("pwd", Encryptor.sha512(pwd));
-		long userSeqno = payDAO.login(reqItem);
+		long userSeqno = payDAO.login(reqItem);	// 회원 시퀀스 번호
 		
 		if (userSeqno == 0) {
 			throw new StudyException("1001", "아이디 또는 비밀번호 확인!");
@@ -56,8 +56,8 @@ public class PayService extends CommonService {
 	}
 
 	public void registerPay(JSONObject reqItem, MultipartFile file) throws Exception {
-		long payItemSeqno = CommonUtil.getLong( reqItem.get("payItemSeqno") );
-		int payAmt = CommonUtil.getInteger( reqItem.get("payAmt") );
+		long payItemSeqno = CommonUtil.getLong( reqItem.get("payItemSeqno") );	// 지출항목 시퀀스
+		int payAmt = CommonUtil.getInteger( reqItem.get("payAmt") );			// 지출 금액
 		long paySeqno = 0L;
 
 		if( payItemSeqno == 0L ) {
@@ -80,9 +80,9 @@ public class PayService extends CommonService {
 
 	public JSONObject getMonthlyPaidItems(long userSeqno) {
 
-		Map item = new HashMap();
-		List<JSONObject> monthlyItems = new ArrayList<>();
-		List<JSONObject> payTypeItems = new ArrayList<>();
+		Map item = new HashMap();							// 조회결과(총누적, 월평균)
+		List<JSONObject> monthlyItems = new ArrayList<>();	// 월별 지출내역
+		List<JSONObject> payTypeItems = new ArrayList<>();	// 지출 항목별 소계
 
 		item = payDAO.getTotalAmounts(userSeqno);
 		monthlyItems = payDAO.getMonthlyItems(userSeqno);
@@ -107,8 +107,9 @@ public class PayService extends CommonService {
 
 	public JSONObject getTodayPaidItems(long userSeqno) {
 
-		Map item = new HashMap();
-		List<JSONObject> todayPaidItems = new ArrayList<>();
+		Map item = new HashMap();								// 조회결과(오늘일자, 오늘지출금액)
+		List<JSONObject> todayPaidItems = new ArrayList<>();	// 지출내역
+
 		JSONObject result = new JSONObject();
 
 		item = payDAO.getTodayPaidTotal(userSeqno);
@@ -122,9 +123,10 @@ public class PayService extends CommonService {
 
 	public JSONObject getTypePaidItems(JSONObject reqItems) {
 
-		List<JSONObject> typePaidItems = new ArrayList<>();
+		Integer totAmt = 0;										// 총 누적 지출금액
+		List<JSONObject> typePaidItems = new ArrayList<>();		// 지출 항목별 목록
+
 		JSONObject result = new JSONObject();
-		Integer totAmt = 0;
 
 		typePaidItems = payDAO.getTypePaidItems(reqItems);
 
@@ -140,7 +142,8 @@ public class PayService extends CommonService {
 
 	public JSONObject getTypeItems(long userSeqno) {
 
-		List<JSONObject> typeItems = new ArrayList<>();
+		List<JSONObject> typeItems = new ArrayList<>();	// 지출항목 목록
+
 		JSONObject result = new JSONObject();
 
 		typeItems = payDAO.getTypeItems(userSeqno);

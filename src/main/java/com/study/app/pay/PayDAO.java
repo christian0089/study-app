@@ -17,7 +17,7 @@ public class PayDAO extends CommonDAO {
 	}
 
     public long registerPay(JSONObject reqItem) {
-		sqlSession.insert("PayMapper.registerPay", reqItem);
+		sqlSession.insert("PayMapper.registerPay", reqItem); // 첨부 이미지 등록
 		return CommonUtil.getLong( reqItem.get("paySeqno") );
 	}
 
