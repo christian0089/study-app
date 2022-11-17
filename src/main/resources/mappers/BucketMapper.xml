@@ -30,8 +30,7 @@
 		       DEL_YN,
 		       (CASE WHEN Count(*) OVER() > ( #{stNo} + 30 ) THEN 'Y'
 		          	 ELSE 'N'
-		       END) AS MORE_YN,
-		       'test' as test
+		       END) AS MORE_YN
 		FROM   TB_BUCKET
 		WHERE  DEL_YN = 'N'
 		ORDER BY BUCKET_SEQNO DESC 
