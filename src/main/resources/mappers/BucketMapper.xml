@@ -28,13 +28,13 @@
 		       REP_IMG_URL,
 		       REG_DTTM,
 		       DEL_YN,
-		       (CASE WHEN Count(*) OVER() > ( #{stNo} + 10 ) THEN 'Y'
+		       (CASE WHEN Count(*) OVER() > ( #{stNo} + 30 ) THEN 'Y'
 		          	 ELSE 'N'
 		       END) AS MORE_YN
 		FROM   TB_BUCKET
 		WHERE  DEL_YN = 'N'
 		ORDER BY BUCKET_SEQNO DESC 
-		LIMIT  #{stNo}, 10
+		LIMIT  #{stNo}, 30
 	</select>
 	
 	<select id="selectBucketDtlItem" parameterType="JSONObject" resultType="CamelJSONObject">
@@ -50,13 +50,13 @@
 		SELECT ROW_NUMBER() OVER(ORDER BY BUCKET_STORY_SEQNO DESC) AS no,
 			   SOTRY_DSCR,
 			   IMG_URL,
-			   (CASE WHEN Count(*) OVER() > ( #{stNo} + 10 ) THEN 'Y'
+			   (CASE WHEN Count(*) OVER() > ( #{stNo} + 30 ) THEN 'Y'
 	          	ELSE 'N'
 	       	   END) AS MORE_YN
 		FROM   TB_BUCKET_STORY
 		WHERE  BUCKET_SEQNO = #{bucketSeqno}
 		  AND  DEL_YN = 'N'
-		LIMIT  #{stNo}, 10
+		LIMIT  #{stNo}, 30
 	</select>
 	
 	<insert id="insertBucket" parameterType="JSONObject" useGeneratedKeys="true" keyProperty="bucketSeqno">
