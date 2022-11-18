@@ -73,6 +73,17 @@ public class CommonController {
 		return resItem;
 	}
 	
+	public JSONObject getItemsResponse2( JSONArray items, String key, Object value, String key2, Object value2 ) {
+		JSONObject resItem = new JSONObject();
+		resItem.put( "resCode", "0000" );
+		resItem.put( "resMsg", "SUCCESS" );
+		resItem.put( "items", items );
+		resItem.put( key, value );
+		resItem.put( key2, value2 );
+		
+		return resItem;
+	}
+	
 	public JSONObject getErrorResponse( String errCode, String errMsg ) {
 		JSONObject resItem = new JSONObject();
 		resItem.put( "resCode", errCode);

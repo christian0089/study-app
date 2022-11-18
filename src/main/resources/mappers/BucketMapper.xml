@@ -34,7 +34,7 @@
 		FROM   TB_BUCKET
 		WHERE  DEL_YN = 'N'
 		ORDER BY BUCKET_SEQNO DESC 
-		LIMIT  #{stNo}, 30
+		LIMIT  #{stNo}, #{searchCnt}
 	</select>
 	
 	<select id="selectBucketDtlItem" parameterType="JSONObject" resultType="CamelJSONObject">
@@ -56,7 +56,7 @@
 		FROM   TB_BUCKET_STORY
 		WHERE  BUCKET_SEQNO = #{bucketSeqno}
 		  AND  DEL_YN = 'N'
-		LIMIT  #{stNo}, 30
+		LIMIT  #{stNo}, #{searchCnt}
 	</select>
 	
 	<insert id="insertBucket" parameterType="JSONObject" useGeneratedKeys="true" keyProperty="bucketSeqno">

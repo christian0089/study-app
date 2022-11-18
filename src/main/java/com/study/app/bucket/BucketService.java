@@ -25,6 +25,9 @@ public class BucketService extends CommonService{
 
 	@Autowired
 	private BucketDAO bucketDAO;
+	
+	private static final int GET_BUCKET_ITEMS_SEARCH_COUNT = 30;		// 버킷리스트 조회건수
+	private static final int GET_STORY_ITEMS_SEARCH_COUNT = 30;			// 스토리리스트 조회건수
 
 	/* 로그인 */
 	@SuppressWarnings("unchecked")
@@ -49,16 +52,21 @@ public class BucketService extends CommonService{
 		
 		Map<String, Object> resMap = new HashMap<String, Object>();
 		String moreYn = "N";		// 더보기여부
+		int nextStNo = 0;
+		
+		paramObj.put("searchCnt", GET_BUCKET_ITEMS_SEARCH_COUNT);
 		
 		// 버킷 목록 조회
 		List<JSONObject> bucketItemsList = bucketDAO.getBucketItems(paramObj);
 		
 		if( !CommonUtil.isEmptyList(bucketItemsList) ) {
 			moreYn = (String) bucketItemsList.get(0).get("moreYn");		// 더보기여부 SET
+			nextStNo = (Integer) paramObj.get("stNo") + GET_BUCKET_ITEMS_SEARCH_COUNT + 1;
 		}
 		
 		resMap.put( "items", bucketItemsList );
 		resMap.put( "moreYn", moreYn );
+		resMap.put( "nextStNo", nextStNo );
 		
 		return resMap;
 	}
@@ -80,16 +88,21 @@ public class BucketService extends CommonService{
 		
 		Map<String, Object> resMap = new HashMap<String, Object>();
 		String moreYn = "N";
+		int nextStNo = 0;
+		
+		paramObj.put("searchCnt", GET_STORY_ITEMS_SEARCH_COUNT);
 		
 		// 스토리 목록조회
 		List<JSONObject> storyItemsList = bucketDAO.getStoryItems(paramObj);
 		
 		if( !CommonUtil.isEmptyList(storyItemsList) ) {
-			moreYn = (String) storyItemsList.get(0).get("moreYn");		// 더보기여부 SET
+			moreYn = (String) storyItemsList.get(0).get("moreYn");
+			nextStNo = (Integer) paramObj.get("stNo") + GET_STORY_ITEMS_SEARCH_COUNT + 1;// 더보기여부 SET
 		}
 		
 		resMap.put( "items", storyItemsList );
 		resMap.put( "moreYn", moreYn );
+		resMap.put( "nextStNo", nextStNo );
 		
 		return resMap;
 	}
