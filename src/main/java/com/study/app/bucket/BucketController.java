@@ -70,7 +70,7 @@ public class BucketController extends CommonController {
 	public JSONObject getStoryItems(@RequestBody JSONObject param) throws Exception {
 		Map<String, Object> resMap = bucketService.getStoryItems(param);
 		
-		return super.getItemsResponse2( CommonUtil.parseListToJSONArray( resMap.get( "items") ), "moreYn", resMap.get( "moreYn"), "nextStNo", resMap.get( "nextStNo") );
+		return super.getItemsResponse2( CommonUtil.parseListToJSONArray( resMap.get( "items") ), "moreYn", resMap.get( "moreYn"), "nextStNo", resMap.get( "nextStNo") ); 
 	}
 	
 	/* 버킷 등록 */
