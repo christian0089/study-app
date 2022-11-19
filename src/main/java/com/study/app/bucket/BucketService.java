@@ -61,7 +61,7 @@ public class BucketService extends CommonService{
 		
 		if( !CommonUtil.isEmptyList(bucketItemsList) ) {
 			moreYn = (String) bucketItemsList.get(0).get("moreYn");		// 더보기여부 SET
-			nextStNo = (Integer) paramObj.get("stNo") + GET_BUCKET_ITEMS_SEARCH_COUNT + 1;
+			nextStNo = (Integer) paramObj.get("stNo") + GET_BUCKET_ITEMS_SEARCH_COUNT;
 		}
 		
 		resMap.put( "items", bucketItemsList );
@@ -97,7 +97,7 @@ public class BucketService extends CommonService{
 		
 		if( !CommonUtil.isEmptyList(storyItemsList) ) {
 			moreYn = (String) storyItemsList.get(0).get("moreYn");
-			nextStNo = (Integer) paramObj.get("stNo") + GET_STORY_ITEMS_SEARCH_COUNT + 1;// 더보기여부 SET
+			nextStNo = (Integer) paramObj.get("stNo") + GET_STORY_ITEMS_SEARCH_COUNT;// 더보기여부 SET
 		}
 		
 		resMap.put( "items", storyItemsList );
