@@ -77,11 +77,9 @@ public class BucketController extends CommonController {
 	@ResponseBody
 	@PostMapping( value = "/regBucket" )
 	public JSONObject regBucket(HttpServletRequest request, @RequestParam( required=false, value="file" ) MultipartFile file, @RequestParam Map<String, Object> paramMap) throws Exception {
-		
-		
-		if(!isLoggedIn(request)) {
-			throw new StudyException("1000", "로그인 정보가 없습니다");
-		}
+//		if(!isLoggedIn(request)) {
+//			throw new StudyException("1000", "로그인 정보가 없습니다");
+//		}
 		
 		paramMap.put("userSeqno", getUserSeqno(request));	// 사용자번호 SET
 		
