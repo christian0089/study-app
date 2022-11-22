@@ -134,7 +134,7 @@ public class BucketService extends CommonService{
 		
 		// 파일업로드 및 업로드경로 SET
 		if ( file != null && !file.isEmpty() ){
-			paramMap.put("repImgUrl", studyImageUtil.uplaodBucketRepImage(file));
+			paramMap.put("repImgUrl", uplaodBucketRepImage2(file));
 		}
 		
 		bucketDAO.regBucket(paramMap);	// 버킷 등록
@@ -142,7 +142,7 @@ public class BucketService extends CommonService{
 		return ((BigInteger)paramMap.get("bucketSeqno")).longValue();
 	}
 	
-	public String uplaodBucketRepImage( MultipartFile file ) throws Exception {
+	public String uplaodBucketRepImage2( MultipartFile file ) throws Exception {
 		String uploadFileName = file.getOriginalFilename();
 		
 		String uploadFileFormat = uploadFileName.substring( uploadFileName.lastIndexOf(".") +1 );
