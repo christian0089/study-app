@@ -21,24 +21,6 @@ import com.study.app.common.StudyException;
 @Transactional(rollbackFor=Exception.class)
 public class BucketService extends CommonService{
 	
-	@Value("${img.max.size}")
-	private long imgMaxSize;
-	
-	@Value("${img.bucket.upload.base.path}")
-	private String bucketUploadBasePath;
-	
-	@Value("${img.bucket.base.url}")
-	private String bucketBaseUrl;
-	
-	@Value("${img.pay.upload.base.path}")
-	private String payUploadBasePath;
-	
-	@Value("${img.pay.base.url}")
-	private String payBaseUrl;
-	
-	private final String BUCKET_REP_SUFFIX = "/rep";
-	private final String BUCKET_STORY_SUFFIX = "/story";
-	
 	public BucketService() {
 		super(BucketService.class);
 	}
@@ -141,29 +123,6 @@ public class BucketService extends CommonService{
 		
 		return ((BigInteger)paramMap.get("bucketSeqno")).longValue();
 	}
-	
-	public String uplaodBucketRepImage2( MultipartFile file ) throws Exception {
-		String uploadFileName = file.getOriginalFilename();
-		
-		String uploadFileFormat = uploadFileName.substring( uploadFileName.lastIndexOf(".") +1 );
-		
-		// 파일 확장자 검증
-		if( !CommonUtil.isAcceptedUploadFileFormat( uploadFileFormat ) ) {
-			throw new StudyException( "1002", "[" + uploadFileFormat + "] 형식의 파일은 업로드 할 수 없습니다." );
-		}
-		
-		String monthSuffix = CommonUtil.SEPARATOR + CommonUtil.getServerTime( "%Y%m" );
-		String saveDir = this.bucketUploadBasePath + this.BUCKET_REP_SUFFIX + monthSuffix;
-		String saveFileName = CommonUtil.SEPARATOR + CommonUtil.getRandomString( -1, 8 ) + CommonUtil.getServerTime( "%Y%m%d" ) + CommonUtil.getRandomString( -1, 8 ) + "." + uploadFileFormat;
-		
-		CommonUtil.makeDirs( saveDir );
-		
-		file.transferTo( new File( saveDir + saveFileName ) );
-		
-		return this.bucketBaseUrl + this.BUCKET_REP_SUFFIX + monthSuffix + saveFileName;
-	}
-	
-	
 
 	/* 스토리 등록 */
 	public long regStory(Map<String, Object> paramMap, MultipartFile file) throws Exception {
