@@ -134,7 +134,7 @@ public class BucketService extends CommonService{
 		
 		// 파일업로드 및 업로드경로 SET
 		if ( file != null && !file.isEmpty() ){
-			paramMap.put("repImgUrl", uplaodBucketRepImage2(file));
+			paramMap.put("repImgUrl", studyImageUtil.uplaodBucketRepImage(file));
 		}
 		
 		bucketDAO.regBucket(paramMap);	// 버킷 등록
