@@ -127,12 +127,11 @@ public class BucketService extends CommonService{
 		
 		if( !CommonUtil.isEmptyList(storyItemsList) ) {
 			moreYn = (String) storyItemsList.get(0).get("moreYn");
-			nextStNo = searchCnt + GET_STORY_ITEMS_SEARCH_COUNT;// 더보기여부 SET
 		}
 		
 		resMap.put( "items", storyItemsList );
 		resMap.put( "moreYn", moreYn );
-		resMap.put( "nextStNo", nextStNo );
+		resMap.put( "nextStNo", searchCnt + GET_STORY_ITEMS_SEARCH_COUNT );
 		
 		return resMap;
 	}
