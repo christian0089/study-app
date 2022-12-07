@@ -109,6 +109,33 @@ public class BucketService extends CommonService{
 		return resMap;
 	}
 	
+	/* 스토리 목록조회 */
+	@SuppressWarnings("unchecked")
+	public Map<String, Object> getStoryItems2(JSONObject paramObj) throws Exception {
+		String[] reqKeys = {"bucketSeqno", "stNo"};			// 필수키
+		super.checkVal(paramObj, reqKeys);					// 벨리데이션 체크
+		
+		Map<String, Object> resMap = new HashMap<String, Object>();
+		String moreYn = "N";
+		int nextStNo = 0;
+		
+		paramObj.put("searchCnt", GET_STORY_ITEMS_SEARCH_COUNT);
+		
+		// 스토리 목록조회
+		List<JSONObject> storyItemsList = bucketDAO.getStoryItems(paramObj);
+		
+		if( !CommonUtil.isEmptyList(storyItemsList) ) {
+			moreYn = (String) storyItemsList.get(0).get("moreYn");
+			nextStNo = (Integer) paramObj.get("searchNo") + GET_STORY_ITEMS_SEARCH_COUNT;// 더보기여부 SET
+		}
+		
+		resMap.put( "items", storyItemsList );
+		resMap.put( "moreYn", moreYn );
+		resMap.put( "nextStNo", nextStNo );
+		
+		return resMap;
+	}
+	
 	/* 버킷 등록 */
 	public long regBucket(Map<String, Object> paramMap, MultipartFile file) throws Exception {
 		String[] reqKeys = {"bucketNm", "bucketDscr"};		// 필수키

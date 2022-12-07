@@ -28,7 +28,7 @@
 		       REP_IMG_URL,
 		       REG_DTTM,
 		       DEL_YN,
-		       (CASE WHEN Count(*) OVER() > ( #{stNo} + 30 ) THEN 'Y'
+		       (CASE WHEN Count(*) OVER() > ( #{stNo} + #{searchCnt} ) THEN 'Y'
 		          	 ELSE 'N'
 		       END) AS MORE_YN
 		FROM   TB_BUCKET
@@ -50,7 +50,7 @@
 		SELECT ROW_NUMBER() OVER(ORDER BY BUCKET_STORY_SEQNO DESC) AS no,
 			   SOTRY_DSCR,
 			   IMG_URL,
-			   (CASE WHEN Count(*) OVER() > ( #{stNo} + 30 ) THEN 'Y'
+			   (CASE WHEN Count(*) OVER() > ( #{stNo} + #{searchCnt} ) THEN 'Y'
 	          	ELSE 'N'
 	       	   END) AS MORE_YN
 		FROM   TB_BUCKET_STORY

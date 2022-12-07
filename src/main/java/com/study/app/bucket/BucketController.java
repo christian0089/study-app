@@ -73,6 +73,15 @@ public class BucketController extends CommonController {
 		return super.getItemsResponse2( CommonUtil.parseListToJSONArray( resMap.get( "items") ), "moreYn", resMap.get( "moreYn"), "nextStNo", resMap.get( "nextStNo") ); 
 	}
 	
+	/* 스토리 목록조회 - StoryDetail로부터 호출 */
+	@ResponseBody
+	@PostMapping( value = "/getStoryItems2" )
+	public JSONObject getStoryItems2(@RequestBody JSONObject param) throws Exception {
+		Map<String, Object> resMap = bucketService.getStoryItems2(param);
+		
+		return super.getItemsResponse2( CommonUtil.parseListToJSONArray( resMap.get( "items") ), "moreYn", resMap.get( "moreYn"), "nextStNo", resMap.get( "nextStNo") ); 
+	}
+	
 	/* 버킷 등록 */
 	@ResponseBody
 	@PostMapping( value = "/regBucket" )
