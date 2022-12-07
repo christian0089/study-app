@@ -118,7 +118,7 @@ public class BucketService extends CommonService{
 		Map<String, Object> resMap = new HashMap<String, Object>();
 		String moreYn = "N";
 		int nextStNo = 0;
-		int searchCnt = (Integer) paramObj.get("searchNo");
+		int searchCnt = (Integer) paramObj.get("searchCnt");
 		
 		paramObj.put("searchCnt", searchCnt);
 		
