@@ -118,15 +118,16 @@ public class BucketService extends CommonService{
 		Map<String, Object> resMap = new HashMap<String, Object>();
 		String moreYn = "N";
 		int nextStNo = 0;
+		int searchCnt = (Integer) paramObj.get("searchNo");
 		
-		paramObj.put("searchCnt", GET_STORY_ITEMS_SEARCH_COUNT);
+		paramObj.put("searchCnt", searchCnt);
 		
 		// 스토리 목록조회
 		List<JSONObject> storyItemsList = bucketDAO.getStoryItems(paramObj);
 		
 		if( !CommonUtil.isEmptyList(storyItemsList) ) {
 			moreYn = (String) storyItemsList.get(0).get("moreYn");
-			nextStNo = (Integer) paramObj.get("searchNo") + GET_STORY_ITEMS_SEARCH_COUNT;// 더보기여부 SET
+			nextStNo = searchCnt + GET_STORY_ITEMS_SEARCH_COUNT;// 더보기여부 SET
 		}
 		
 		resMap.put( "items", storyItemsList );
