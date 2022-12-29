@@ -117,7 +117,6 @@ public class BucketService extends CommonService{
 		
 		Map<String, Object> resMap = new HashMap<String, Object>();
 		String moreYn = "N";
-		int nextStNo = 0;
 		int searchCnt = (Integer) paramObj.get("searchCnt");
 		
 		paramObj.put("searchCnt", searchCnt);
@@ -131,7 +130,7 @@ public class BucketService extends CommonService{
 		
 		resMap.put( "items", storyItemsList );
 		resMap.put( "moreYn", moreYn );
-		resMap.put( "nextStNo", searchCnt + GET_STORY_ITEMS_SEARCH_COUNT );
+		resMap.put( "nextStNo", searchCnt );
 		
 		return resMap;
 	}
