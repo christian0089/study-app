@@ -47,15 +47,22 @@
 	</select>
 	
 	<select id="selectStoryItems" parameterType="JSONObject" resultType="CamelJSONObject">
-		SELECT ROW_NUMBER() OVER(ORDER BY BUCKET_STORY_SEQNO DESC) AS no,
-			   SOTRY_DSCR,
-			   IMG_URL,
+		SELECT ROW_NUMBER() OVER(ORDER BY TBS.BUCKET_STORY_SEQNO DESC) AS no,
+			   TBS.SOTRY_DSCR,
+			   TBS.IMG_URL,
 			   (CASE WHEN Count(*) OVER() > ( #{stNo} + #{searchCnt} ) THEN 'Y'
-	          	ELSE 'N'
-	       	   END) AS MORE_YN
-		FROM   TB_BUCKET_STORY
-		WHERE  BUCKET_SEQNO = #{bucketSeqno}
-		  AND  DEL_YN = 'N'
+		      	ELSE 'N'
+		   	   END) AS MORE_YN,
+		   	   TBU.USER_ID, 
+		   	   TBU.NAME
+		FROM   TB_BUCKET TB
+		INNER JOIN TB_BUCKET_STORY TBS
+		ON     TBS.BUCKET_SEQNO = TB.BUCKET_SEQNO
+		LEFT  JOIN TB_BUCKET_USER TBU
+		ON     TBU.USER_SEQNO = TB.USER_SEQNO
+		WHERE  TBS.BUCKET_SEQNO = #{bucketSeqno}
+		  AND  TBS.DEL_YN = 'N'
+		  AND  TBU.DEL_YN = 'N'
 		LIMIT  #{stNo}, #{searchCnt}
 	</select>
 	
