@@ -1,7 +1,6 @@
 package com.study.app.pay;
 
 import com.study.app.common.StudyException;
-import com.study.app.common.StudyImageUtil;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,8 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.HashMap;
-import java.util.Map;
 
 @Controller
 @RequestMapping( value = "/pay" )
@@ -29,6 +26,7 @@ public class PayController extends CommonController{
 	}
 	
 	@ResponseBody
+	@CrossOrigin( origins = "*" )
 	@PostMapping( value = "/login" )	// 2.1.1 로그인
 	public JSONObject login( HttpSession session, @RequestBody JSONObject reqItem ) throws Exception {
 		long userSeqno = 0;
