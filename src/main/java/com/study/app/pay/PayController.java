@@ -26,7 +26,7 @@ public class PayController extends CommonController{
 	}
 	
 	@ResponseBody
-	@CrossOrigin( origins = "j-devs.net" )
+	@CrossOrigin( origins = "viewfinder.co.kr" )
 	@PostMapping( value = "/login" )	// 2.1.1 로그인
 	public JSONObject login( HttpSession session, @RequestBody JSONObject reqItem ) throws Exception {
 		long userSeqno = 0;
